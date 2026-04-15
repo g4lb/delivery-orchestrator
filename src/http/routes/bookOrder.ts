@@ -1,9 +1,9 @@
 import type { FastifyInstance } from 'fastify';
 import type { BookingService } from '../../services/bookingService';
-import type { OrderPayload } from '../../types';
+import type { OrderPayload } from '../../shared/types';
 import { bookOrderSchema } from '../schemas/bookOrder.schema';
 import { validateTimeRange } from '../hooks/validateTimeRange';
-import { HTTP_STATUS, REASON_TO_STATUS } from '../../constants';
+import { HTTP_STATUS, REASON_TO_STATUS } from '../../config/constants';
 
 type BookOrderBody = OrderPayload & { quote_id: string };
 

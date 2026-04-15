@@ -1,5 +1,5 @@
 import type { FastifyInstance, FastifyError } from 'fastify';
-import { ERROR_CODES, HTTP_STATUS } from '../constants';
+import { ERROR_CODES, HTTP_STATUS } from '../config/constants';
 
 export function registerErrorHandler(app: FastifyInstance): void {
   app.setErrorHandler((err: FastifyError, _req, reply) => {

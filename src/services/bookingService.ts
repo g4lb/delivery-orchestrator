@@ -2,12 +2,12 @@ import { v4 as uuidv4 } from 'uuid';
 import type { Db } from '../db/connection';
 import type { QuotesRepo } from '../db/quotesRepo';
 import type { OrdersRepo } from '../db/ordersRepo';
-import type { Clock } from '../clock';
-import { formatIso } from '../clock';
-import type { OrderPayload, BookingResult, Quote, Order } from '../types';
+import type { Clock } from '../shared/clock';
+import { formatIso } from '../shared/clock';
+import type { OrderPayload, BookingResult, Quote, Order } from '../shared/types';
 import { fits } from '../domain/availability';
-import { MAX_WINDOW_WEIGHT_KG } from '../config';
-import { ERROR_CODES } from '../constants';
+import { MAX_WINDOW_WEIGHT_KG } from '../config/config';
+import { ERROR_CODES } from '../config/constants';
 
 export class BookingService {
   constructor(

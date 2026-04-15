@@ -1,5 +1,5 @@
 import { windowMatchesOrder } from '../../src/domain/time';
-import type { DeliveryWindow, OrderPayload } from '../../src/types';
+import type { DeliveryWindow, OrderPayload } from '../../src/shared/types';
 
 const order: OrderPayload = {
   lng: 0, lat: 0, weight: 100,

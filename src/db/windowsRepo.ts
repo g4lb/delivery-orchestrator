@@ -1,5 +1,5 @@
 import type { Db } from './connection';
-import type { DeliveryWindow } from '../types';
+import type { DeliveryWindow } from '../shared/types';
 
 export class WindowsRepo {
   constructor(private db: Db) {}

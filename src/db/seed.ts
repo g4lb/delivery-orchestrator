@@ -1,6 +1,6 @@
-import type { TeamsRepo } from './db/teamsRepo';
-import type { WindowsRepo } from './db/windowsRepo';
-import type { Team, DeliveryWindow } from './types';
+import type { TeamsRepo } from './teamsRepo';
+import type { WindowsRepo } from './windowsRepo';
+import type { Team, DeliveryWindow } from '../shared/types';
 
 const SEED_TEAMS: Team[] = [
   { id: 'team-tlv-north', name: 'Tel Aviv North', lng: 34.7818, lat: 32.0853 },

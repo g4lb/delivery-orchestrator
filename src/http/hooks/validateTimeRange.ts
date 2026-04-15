@@ -1,5 +1,5 @@
 import type { preHandlerHookHandler } from 'fastify';
-import { ERROR_CODES, ERROR_MESSAGES, HTTP_STATUS } from '../../constants';
+import { ERROR_CODES, ERROR_MESSAGES, HTTP_STATUS } from '../../config/constants';
 
 export const validateTimeRange: preHandlerHookHandler = async (req, reply) => {
   const body = req.body as { min_time?: string; max_time?: string };

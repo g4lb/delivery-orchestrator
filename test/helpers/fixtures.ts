@@ -1,4 +1,4 @@
-import type { Team, DeliveryWindow, Order, OrderPayload } from '../../src/types';
+import type { Team, DeliveryWindow, Order, OrderPayload } from '../../src/shared/types';
 
 export function makeTeam(overrides: Partial<Team> = {}): Team {
   return {

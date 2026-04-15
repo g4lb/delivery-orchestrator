@@ -1,7 +1,7 @@
 import { openDb } from './db/connection';
-import { SystemClock } from './clock';
-import { seed } from './seed';
-import { buildRepos, buildServices, buildFastifyApp } from './appBuilder';
+import { SystemClock } from './shared/clock';
+import { seed } from './db/seed';
+import { buildRepos, buildServices, buildFastifyApp } from './app/appBuilder';
 
 const DEFAULT_PORT = 3000;
 const HOST = '0.0.0.0';

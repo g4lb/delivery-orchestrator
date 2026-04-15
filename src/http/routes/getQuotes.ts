@@ -1,9 +1,9 @@
 import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import type { QuotingService } from '../../services/quotingService';
-import type { OrderPayload } from '../../types';
+import type { OrderPayload } from '../../shared/types';
 import { orderPayloadSchema } from '../schemas/orderPayload.schema';
 import { validateTimeRange } from '../hooks/validateTimeRange';
-import { HTTP_STATUS } from '../../constants';
+import { HTTP_STATUS } from '../../config/constants';
 
 export function registerGetQuotesRoute(app: FastifyInstance, service: QuotingService): void {
   const handler = async (req: FastifyRequest, reply: FastifyReply) => {

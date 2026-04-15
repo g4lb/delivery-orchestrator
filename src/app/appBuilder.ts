@@ -1,15 +1,15 @@
 import Fastify, { type FastifyInstance } from 'fastify';
-import type { Db } from './db/connection';
-import type { Clock } from './clock';
-import { TeamsRepo } from './db/teamsRepo';
-import { WindowsRepo } from './db/windowsRepo';
-import { QuotesRepo } from './db/quotesRepo';
-import { OrdersRepo } from './db/ordersRepo';
-import { QuotingService } from './services/quotingService';
-import { BookingService } from './services/bookingService';
-import { registerGetQuotesRoute } from './http/routes/getQuotes';
-import { registerBookOrderRoute } from './http/routes/bookOrder';
-import { registerErrorHandler } from './http/errorHandler';
+import type { Db } from '../db/connection';
+import type { Clock } from '../shared/clock';
+import { TeamsRepo } from '../db/teamsRepo';
+import { WindowsRepo } from '../db/windowsRepo';
+import { QuotesRepo } from '../db/quotesRepo';
+import { OrdersRepo } from '../db/ordersRepo';
+import { QuotingService } from '../services/quotingService';
+import { BookingService } from '../services/bookingService';
+import { registerGetQuotesRoute } from '../http/routes/getQuotes';
+import { registerBookOrderRoute } from '../http/routes/bookOrder';
+import { registerErrorHandler } from '../http/errorHandler';
 
 export interface Repos {
   teams: TeamsRepo;

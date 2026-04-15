@@ -1,5 +1,5 @@
 import type { Db } from './connection';
-import type { Order } from '../types';
+import type { Order } from '../shared/types';
 
 export class OrdersRepo {
   constructor(private db: Db) {}

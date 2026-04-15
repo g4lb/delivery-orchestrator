@@ -4,9 +4,9 @@ import { WindowsRepo } from '../../src/db/windowsRepo';
 import { QuotesRepo } from '../../src/db/quotesRepo';
 import { OrdersRepo } from '../../src/db/ordersRepo';
 import { BookingService } from '../../src/services/bookingService';
-import { FakeClock } from '../../src/clock';
+import { FakeClock } from '../../src/shared/clock';
 import { makeTeam, makeWindow, makeOrder, makeOrderPayload } from '../helpers/fixtures';
-import type { Quote } from '../../src/types';
+import type { Quote } from '../../src/shared/types';
 
 const NOW = new Date('2026-04-14T12:00:00Z');
 

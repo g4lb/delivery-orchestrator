@@ -1,15 +1,15 @@
 import { v4 as uuidv4 } from 'uuid';
-import type { OrderPayload, QuoteResult, Quote, Team, DeliveryWindow } from '../types';
+import type { OrderPayload, QuoteResult, Quote, Team, DeliveryWindow } from '../shared/types';
 import type { TeamsRepo } from '../db/teamsRepo';
 import type { WindowsRepo } from '../db/windowsRepo';
 import type { QuotesRepo } from '../db/quotesRepo';
 import type { OrdersRepo } from '../db/ordersRepo';
-import type { Clock } from '../clock';
-import { formatIso } from '../clock';
+import type { Clock } from '../shared/clock';
+import { formatIso } from '../shared/clock';
 import { haversineKm } from '../domain/geo';
 import { windowMatchesOrder } from '../domain/time';
 import { fits } from '../domain/availability';
-import { MAX_WINDOW_WEIGHT_KG, SERVICE_RADIUS_KM, QUOTE_TTL_MS } from '../config';
+import { MAX_WINDOW_WEIGHT_KG, SERVICE_RADIUS_KM, QUOTE_TTL_MS } from '../config/config';
 
 export class QuotingService {
   constructor(

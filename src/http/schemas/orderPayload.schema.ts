@@ -1,5 +1,5 @@
-import { MAX_WINDOW_WEIGHT_KG } from '../../config';
-import { ISO_DATETIME_REGEX } from '../../constants';
+import { MAX_WINDOW_WEIGHT_KG } from '../../config/config';
+import { ISO_DATETIME_REGEX } from '../../config/constants';
 
 export const orderPayloadSchema = {
   type: 'object',

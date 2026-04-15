@@ -1,7 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { openDb, type Db } from '../../src/db/connection';
-import { FakeClock } from '../../src/clock';
-import { buildRepos, buildServices, buildFastifyApp, type Repos } from '../../src/appBuilder';
+import { FakeClock } from '../../src/shared/clock';
+import { buildRepos, buildServices, buildFastifyApp, type Repos } from '../../src/app/appBuilder';
 
 const DEFAULT_TEST_DATE = new Date('2026-04-14T12:00:00Z');
 

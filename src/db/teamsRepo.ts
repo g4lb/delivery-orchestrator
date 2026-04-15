@@ -1,5 +1,5 @@
 import type { Db } from './connection';
-import type { Team } from '../types';
+import type { Team } from '../shared/types';
 
 export class TeamsRepo {
   constructor(private db: Db) {}

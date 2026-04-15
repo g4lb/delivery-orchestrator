@@ -1,5 +1,5 @@
 import type { Db } from './connection';
-import type { Quote } from '../types';
+import type { Quote } from '../shared/types';
 
 export class QuotesRepo {
   constructor(private db: Db) {}
