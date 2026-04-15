@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import type { OrderPayload, QuoteResult, Quote } from '../types';
+import type { OrderPayload, QuoteResult, Quote, Team, DeliveryWindow } from '../types';
 import type { TeamsRepo } from '../db/teamsRepo';
 import type { WindowsRepo } from '../db/windowsRepo';
 import type { QuotesRepo } from '../db/quotesRepo';
@@ -21,51 +21,71 @@ export class QuotingService {
   ) {}
 
   getQuotes(order: OrderPayload): QuoteResult[] {
-    const allTeams = this.teams.listAll();
-    const eligibleTeams = allTeams.filter(
-      t => haversineKm({ lat: order.lat, lng: order.lng }, { lat: t.lat, lng: t.lng }) <= SERVICE_RADIUS_KM,
-    );
-    if (eligibleTeams.length === 0) return [];
+    const eligibleTeamIds = this.findEligibleTeamIds(order);
+    if (eligibleTeamIds.length === 0) return [];
 
-    const eligibleTeamIds = eligibleTeams.map(t => t.id);
-    // The SQL WHERE clause already filters by time range, but we re-apply the
-    // canonical `windowMatchesOrder` check so the half-open rule has exactly one
-    // source of truth in the domain layer. The SQL is an index-friendly prefilter.
-    const candidateWindows = this.windows
-      .findStartingInRange(order.min_time, order.max_time, eligibleTeamIds)
-      .filter(w => windowMatchesOrder(w, order));
-    if (candidateWindows.length === 0) return [];
-
-    const usedWeights = this.orders.sumWeightByWindowIds(candidateWindows.map(w => w.id));
-    const fittingWindows = candidateWindows.filter(w =>
-      fits(order.weight, usedWeights.get(w.id) ?? 0, MAX_WINDOW_WEIGHT_KG),
-    );
+    const fittingWindows = this.findFittingWindows(order, eligibleTeamIds);
     if (fittingWindows.length === 0) return [];
 
+    return this.createQuotesForWindows(order, fittingWindows);
+  }
+
+  private findEligibleTeamIds(order: OrderPayload): string[] {
+    return this.teams
+      .listAll()
+      .filter(t => isTeamInRadius(t, order))
+      .map(t => t.id);
+  }
+
+  private findFittingWindows(order: OrderPayload, teamIds: string[]): DeliveryWindow[] {
+    const candidates = this.windows
+      .findStartingInRange(order.min_time, order.max_time, teamIds)
+      .filter(w => windowMatchesOrder(w, order));
+    if (candidates.length === 0) return [];
+
+    const usedWeights = this.orders.sumWeightByWindowIds(candidates.map(w => w.id));
+    return candidates.filter(w =>
+      fits(order.weight, usedWeights.get(w.id) ?? 0, MAX_WINDOW_WEIGHT_KG),
+    );
+  }
+
+  private createQuotesForWindows(order: OrderPayload, windows: DeliveryWindow[]): QuoteResult[] {
     const now = this.clock.now();
     const createdAt = formatIso(now);
     const expiresAt = formatIso(new Date(now.getTime() + QUOTE_TTL_MS));
 
-    const newQuotes: Quote[] = fittingWindows.map(w => ({
-      id: uuidv4(),
-      window_id: w.id,
-      lng: order.lng,
-      lat: order.lat,
-      min_time: order.min_time,
-      max_time: order.max_time,
-      weight: order.weight,
-      created_at: createdAt,
-      expires_at: expiresAt,
-    }));
+    const newQuotes: Quote[] = windows.map(w => buildQuote(w.id, order, createdAt, expiresAt));
     this.quotes.insertMany(newQuotes);
 
-    return newQuotes.map((q, i) => ({
-      quote_id: q.id,
-      window_id: fittingWindows[i]!.id,
-      team_id: fittingWindows[i]!.team_id,
-      start_time: fittingWindows[i]!.start_time,
-      end_time: fittingWindows[i]!.end_time,
-      expires_at: q.expires_at,
+    return windows.map((w, i) => ({
+      quote_id: newQuotes[i]!.id,
+      window_id: w.id,
+      team_id: w.team_id,
+      start_time: w.start_time,
+      end_time: w.end_time,
+      expires_at: expiresAt,
     }));
   }
+}
+
+function isTeamInRadius(team: Team, order: OrderPayload): boolean {
+  const distance = haversineKm(
+    { lat: order.lat, lng: order.lng },
+    { lat: team.lat, lng: team.lng },
+  );
+  return distance <= SERVICE_RADIUS_KM;
+}
+
+function buildQuote(windowId: string, order: OrderPayload, createdAt: string, expiresAt: string): Quote {
+  return {
+    id: uuidv4(),
+    window_id: windowId,
+    lng: order.lng,
+    lat: order.lat,
+    min_time: order.min_time,
+    max_time: order.max_time,
+    weight: order.weight,
+    created_at: createdAt,
+    expires_at: expiresAt,
+  };
 }

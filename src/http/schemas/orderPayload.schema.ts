@@ -1,0 +1,15 @@
+import { MAX_WINDOW_WEIGHT_KG } from '../../config';
+import { ISO_DATETIME_REGEX } from '../../constants';
+
+export const orderPayloadSchema = {
+  type: 'object',
+  required: ['lng', 'lat', 'min_time', 'max_time', 'weight'],
+  additionalProperties: false,
+  properties: {
+    lng: { type: 'number', minimum: -180, maximum: 180 },
+    lat: { type: 'number', minimum: -90, maximum: 90 },
+    min_time: { type: 'string', pattern: ISO_DATETIME_REGEX },
+    max_time: { type: 'string', pattern: ISO_DATETIME_REGEX },
+    weight: { type: 'number', exclusiveMinimum: 0, maximum: MAX_WINDOW_WEIGHT_KG },
+  },
+} as const;
