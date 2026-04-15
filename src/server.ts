@@ -22,7 +22,7 @@ async function main() {
   seed(teams, windows);
 
   const quotingService = new QuotingService(teams, windows, quotes, orders, clock);
-  const bookingService = new BookingService(db, windows, quotes, orders, clock);
+  const bookingService = new BookingService(db, quotes, orders, clock);
 
   const app = Fastify({ logger: true });
   app.setErrorHandler((err: FastifyError, _req, reply) => {

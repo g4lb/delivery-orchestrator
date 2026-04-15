@@ -17,7 +17,7 @@ function setup() {
   const quotes = new QuotesRepo(db);
   const orders = new OrdersRepo(db);
   const clock = new FakeClock(NOW);
-  const service = new BookingService(db, windows, quotes, orders, clock);
+  const service = new BookingService(db, quotes, orders, clock);
   teams.insert(makeTeam());
   return { db, teams, windows, quotes, orders, clock, service };
 }

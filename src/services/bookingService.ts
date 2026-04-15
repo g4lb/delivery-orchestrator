@@ -1,6 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
 import type { Db } from '../db/connection';
-import type { WindowsRepo } from '../db/windowsRepo';
 import type { QuotesRepo } from '../db/quotesRepo';
 import type { OrdersRepo } from '../db/ordersRepo';
 import type { Clock } from '../clock';
@@ -22,7 +21,6 @@ function snapshotMatches(q: Quote, p: OrderPayload): boolean {
 export class BookingService {
   constructor(
     private db: Db,
-    private windows: WindowsRepo,
     private quotes: QuotesRepo,
     private orders: OrdersRepo,
     private clock: Clock,

@@ -7,6 +7,7 @@ import type { OrdersRepo } from '../db/ordersRepo';
 import type { Clock } from '../clock';
 import { formatIso } from '../clock';
 import { haversineKm } from '../domain/geo';
+import { windowMatchesOrder } from '../domain/time';
 import { fits } from '../domain/availability';
 import { MAX_WINDOW_WEIGHT_KG, SERVICE_RADIUS_KM, QUOTE_TTL_MS } from '../config';
 
@@ -27,7 +28,12 @@ export class QuotingService {
     if (eligibleTeams.length === 0) return [];
 
     const eligibleTeamIds = eligibleTeams.map(t => t.id);
-    const candidateWindows = this.windows.findStartingInRange(order.min_time, order.max_time, eligibleTeamIds);
+    // The SQL WHERE clause already filters by time range, but we re-apply the
+    // canonical `windowMatchesOrder` check so the half-open rule has exactly one
+    // source of truth in the domain layer. The SQL is an index-friendly prefilter.
+    const candidateWindows = this.windows
+      .findStartingInRange(order.min_time, order.max_time, eligibleTeamIds)
+      .filter(w => windowMatchesOrder(w, order));
     if (candidateWindows.length === 0) return [];
 
     const usedWeights = this.orders.sumWeightByWindowIds(candidateWindows.map(w => w.id));

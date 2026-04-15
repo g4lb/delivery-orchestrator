@@ -28,7 +28,7 @@ export async function buildTestApp(initialDate = new Date('2026-04-14T12:00:00Z'
   const orders = new OrdersRepo(db);
   const clock = new FakeClock(initialDate);
   const quotingService = new QuotingService(teams, windows, quotes, orders, clock);
-  const bookingService = new BookingService(db, windows, quotes, orders, clock);
+  const bookingService = new BookingService(db, quotes, orders, clock);
 
   const app = Fastify({ logger: false });
   app.setErrorHandler((err: FastifyError, _req, reply) => {

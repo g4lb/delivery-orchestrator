@@ -1,6 +1,7 @@
-import type { FastifyInstance } from 'fastify';
+import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import type { QuotingService } from '../../services/quotingService';
 import { MAX_WINDOW_WEIGHT_KG } from '../../config';
+import { rejectIfTimeRangeInvalid } from '../validation';
 
 const orderPayloadSchema = {
   type: 'object',
@@ -16,13 +17,11 @@ const orderPayloadSchema = {
 } as const;
 
 export function registerGetQuotesRoute(app: FastifyInstance, service: QuotingService): void {
-  const handler = async (req: import('fastify').FastifyRequest, reply: import('fastify').FastifyReply) => {
+  const handler = async (req: FastifyRequest, reply: FastifyReply) => {
     const body = req.body as {
       lng: number; lat: number; min_time: string; max_time: string; weight: number;
     };
-    if (body.min_time >= body.max_time) {
-      return reply.code(400).send({ error: 'invalid_payload', details: ['min_time must be < max_time'] });
-    }
+    if (rejectIfTimeRangeInvalid(body, reply)) return;
     const quotes = service.getQuotes(body);
     return reply.code(200).send({ quotes });
   };

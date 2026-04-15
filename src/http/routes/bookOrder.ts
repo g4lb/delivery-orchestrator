@@ -1,6 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import type { BookingService } from '../../services/bookingService';
 import { MAX_WINDOW_WEIGHT_KG } from '../../config';
+import { rejectIfTimeRangeInvalid } from '../validation';
 
 const bookOrderSchema = {
   type: 'object',
@@ -28,9 +29,7 @@ export function registerBookOrderRoute(app: FastifyInstance, service: BookingSer
     const body = req.body as {
       quote_id: string; lng: number; lat: number; min_time: string; max_time: string; weight: number;
     };
-    if (body.min_time >= body.max_time) {
-      return reply.code(400).send({ error: 'invalid_payload', details: ['min_time must be < max_time'] });
-    }
+    if (rejectIfTimeRangeInvalid(body, reply)) return;
     const { quote_id, ...payload } = body;
     const result = service.book(quote_id, payload);
     if (result.ok) {
